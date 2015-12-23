@@ -1,0 +1,109 @@
+<div class="container">
+
+      <div class="row col-xs-12 text-center">
+        <h1 id="title">Welcome to <span id="cursiveTitle">Restaurant Logs</span></h1>
+
+        <p id="abstract" ng-show="showSignUp">Restaurant Logs provides services to restaurant owners to run their business more efficiently. We provide a central hub for all the restaurant’s activities through daily written logs by the managers in charge. You can have complete control and knowledge of what is going on within your restaurant. <strong>Sign Up Today For Free!</strong></p>
+      
+      </div>
+
+      <div id="signUpDiv" ng-show="showSignUp" class="row col-xs-12 col-md-8 col-md-offset-2">
+        
+        <form class="form-horizontal" role="form" name="signUpForm" novalidate ng-submit="newSignUpSubmit(newUser)">
+
+        <div class="form-group">
+          <label class="control-label col-sm-2 col-sm-offset-2" for="fullname">Full Name:</label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" name="fullname" ng-model="newUser.fullName" placeholder="Enter Full Name"  ng-required="true" >
+          </div>
+        </div> <!-- fullname div -->
+
+        <div class="form-group">
+          <label class="control-label col-sm-2 col-sm-offset-2" for="email">Email:</label>
+          <div class="col-sm-6">
+            <input type="email" class="form-control" name="email"  ng-model="newUser.email" placeholder="Enter Email" ng-required="true" ng-pattern="emailPattern">
+            <p id="errorMsg" class="error" ng-show="signUpForm.email.$invalid && signUpForm.email.$dirty || signUpForm.email.$error.pattern">Please enter a valid email address</p>
+          </div>
+        </div> <!-- email div -->
+
+        <div class="form-group">
+          <label class="control-label col-sm-2 col-sm-offset-2" for="password">Password:</label>
+          <div class="col-sm-6">
+            <input type="password" class="form-control" name="password" ng-model="newUser.password" placeholder="Enter Password" minlength="6" ng-required="true">
+            <p id="errorMsg" ng-show="signUpForm.password.$invalid && signUpForm.password.$dirty">Password must be 6 characters or more</p>
+          </div>
+        </div> <!-- password div -->
+
+        <div class="form-group">
+          <label class="control-label col-sm-2 col-sm-offset-2" for="role">Select Role:</label>
+          <div class="col-sm-6">
+
+            <select class="form-control" ng-model="newUser.role" name="role">
+              <option value="owner">Owner</option>
+              <option value="manager">Manager</option>
+            </select>
+
+          </div>
+        </div> <!-- select div -->
+
+        <div class="row form-group">
+          <div class="col-sm-offset-4 col-xs-6"> 
+            <button type="submit" ng-disabled="signUpForm.$invalid" class="btn btn-block btn-success">Sign Up</button>
+          </div>
+          <div class="col-sm-offset-4 col-xs-6 text-center">
+            <p>Already have an account? <a target="_self" ng-click="logIn()">Log In Here</a></p>
+          </div>
+        </div> <!-- sign up button div -->
+
+      </form>
+</div> <!-- end signup form div -->
+
+<div id="LogInDiv" ng-show="!showSignUp" class="row col-xs-12 col-md-8 col-md-offset-2">
+        <form class="form-horizontal" role="form" name="logInForm" novalidate ng-submit="newLogIn(user)">
+
+          <h4 class="text-center col-sm-offset-2">Log In</h4>
+
+        <div class="form-group">
+          <label class="control-label col-sm-2 col-sm-offset-2" for="email">Email:</label>
+          <div class="col-sm-6">
+            <input type="email" class="form-control" id="email" ng-model="user.logInEmail" placeholder="Enter Email" ng-required="true">
+          </div>
+        </div> <!-- email div -->
+
+        <div class="form-group">
+          <label class="control-label col-sm-2 col-sm-offset-2" for="logInPassword">Password:</label>
+          <div class="col-sm-6">
+            <input type="password" class="form-control" id="logInPassword" ng-model="user.logInPassword" placeholder="Enter Password" ng-required="true">
+             <p id="errorMsg" ng-show="invalidLogin">Username or Password entered is invalid</p>
+
+          </div>
+        </div> <!-- password div -->
+        <div class="form-group">
+          <label class="control-label col-sm-2 col-sm-offset-2" for="role">Select Role:</label>
+          <div class="col-sm-6">
+
+            <select class="form-control" ng-model="user.logInRole" name="role">
+              <option value="owner">Owner</option>
+              <option value="manager">Manager</option>
+            </select>
+
+          </div>
+        </div> <!-- select div -->
+
+        <div class="row form-group">
+
+          <!-- possibly add a remember me checkbox here -->
+
+          <div class="col-sm-offset-4 col-xs-6">
+            <button type="submit" class="btn btn-block btn-success" ng-disabled="logInForm.$invalid" >Login</button>
+          </div>
+          <div class="col-sm-offset-4 col-xs-6 text-center">
+            <p>Don't have an account? <a target="_self" ng-click="signUp()">Sign Up Here</a></p>
+          </div>
+        </div> <!-- LogIn button div -->
+
+      </form>
+</div> <!-- end signup form div -->
+      
+
+    </div> <!-- end container -->

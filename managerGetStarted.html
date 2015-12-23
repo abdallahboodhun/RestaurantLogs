@@ -1,0 +1,79 @@
+ <div class="container ">
+
+      <div class="row col-xs-12 text-center">
+
+        <div class="jumbotron">
+          <h1>Restaurant Logs</h1>
+        </div>
+        <h2 id="title">Great Job Signing Up, {{loggedInUser.ManagerFullName}}!</h2>
+        <p id="abstract">You are one step closer to managing your business better. Get started now by searching below for your business. Please Note: Only businesses created by restaurant owners on Restaurant Logs will appear below.</p>
+      </div>      <!-- end title and abstract -->
+       
+       <div id="businessSearchDiv" class="row col-xs-12 col-md-8 col-md-offset-2">
+         <!-- <form action="" name="businessSearchForm" role="form" novalidate ng-submit="getAllBusinesses()"> -->
+
+          <div class="form-group">
+          <label  class="control-label" for="businessName">Search for Business:</label>
+            <input type="text" class="form-control" name="businessName" placeholder="Search for Business by Name here"  ng-required="true">
+        </div> <!-- businessName div -->
+         
+             <div class="form-group">
+               <div class="col-xs-12">
+                 <button type="button" class="btn btn-block btn-primary" ng-click="getAllBusinesses()"ng-disabled="businessSearchForm.$invalid">Search</button>
+               </div>
+             </div>
+
+
+         <!-- </form> -->
+                      <div class="form-group col-xs-12">
+              <div class="col-xs-12">
+                <table class="table table-striped" id="styles_table">
+                  
+                  <thead>
+                                    <tr>
+                                        <th >Business Name</th>
+                                        <th>Business Address</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+
+                  <tbody>
+
+                    <tr ng-repeat="business in AllBusinessArr">
+                      
+                      <td>{{business.BusinessName}}</td>
+                      <td>{{business.BusinessAddress}}</td>
+                      <td><button data-toggle="modal" class="btn btn-success" ng-click="managerSelectBusiness(business)" data-target="#businessSelectModal">Select</button></td>
+                    </tr>
+
+
+                  </tbody>
+                  
+                </table>
+              </div>
+             </div>
+           </div>
+             
+             <div class="modal" data-backdrop="static" id="businessSelectModal" role="dialog">
+                      <div class="modal-dialog">
+                        
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h3 class="modal-title text-center">{{selectedBusinessName}}</h3>
+                          </div>
+                              <div class="modal-body">
+                                <p id="modal_text" class="text-center">Great! The owner of this business is being notified and will confirm if you manage here before you may begin logging. You will be taken back to Log In.</p>
+                              <a class="btn btn-danger" data-dismiss="modal" ng-click="goToHome()"> <span class="glyphicon glyphicon-remove"></span>  Close</a>
+                              </div> <!-- end modal body -->
+                          </div>
+
+                          </div>
+
+
+
+
+
+       </div > <!--  Business Info Form -->
+
+    </div> <!-- end container -->

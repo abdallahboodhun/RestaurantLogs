@@ -1,0 +1,35 @@
+<div class="container" ng-init="getInfo()">
+
+      <div class="row col-xs-12 text-center">
+
+        <div class="jumbotron">
+          <h1>Restaurant Logs</h1>
+        </div>
+        <h2 id="title">Great Job Signing Up, {{User.fullName}}!</h2>
+        <p id="abstract">You are one step closer to managing your business better. Get started now by entering your Business Name and Address below. Please fill out below as best as you can, as it seperates your businesses from one another</p>
+      </div>      <!-- end title and abstract -->
+       
+       <div id="businessFormDiv" class="row col-xs-12 col-md-8 col-md-offset-2">
+         <form name="businessForm" role="form" novalidate ng-submit="newBusinessInfo(business)">
+
+          <div class="form-group">
+          <label  class="control-label" for="businessName">Business Name:</label>
+            <input type="text" class="form-control" name="businessName" ng-model="business.businessName" placeholder="Enter Business Name"  ng-required="true" >
+        </div> <!-- businessName div -->
+
+        <div class="form-group">
+          <label class="control-label" for="businessAddress">Business Address:</label>
+            <input type="text" class="form-control" name="businessAddress" ng-model="business.businessAddress" placeholder="Enter Business Address"  ng-required="true" >
+        </div> <!-- businessAddress div -->
+         
+             <div class="form-group">
+               <div class="col-xs-12">
+                 <button type="submit" class="btn btn-block btn-primary" ng-disabled="businessForm.$invalid">Continue</button>
+               </div>
+             </div>
+
+
+         </form>
+       </div > <!--  Business Info Form -->
+
+    </div> <!-- end container -->

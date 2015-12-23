@@ -1,0 +1,268 @@
+ <div class="container " ng-init="getBusiness(loggedInUser.OwnerID)">
+            <div class="row col-xs-12 text-center">
+                <div class="row jumbotron">
+                    <h1>Restaurant Logs</h1>
+                </div>
+                <div class="row text-right">
+                    <a ng-click="logout()" class="btn btn-danger" style="margin-top: -35px;"> <span class="glyphicon glyphicon-log-out"></span> Logout </a>
+                </div>
+                <div class="row text-center">
+                    <h2 id="title">Welcome Back, {{loggedInUser.OwnerFullName}}!</h2>
+                <h3 ng-show="noBusiness === false">{{Business.BusinessName}}</h3>
+                <h3 ng-show="noBusiness === true">Oops, looks like you have not created a business yet, Please create your business <a ng-click="goToOwnerGetStarted()">here!</a></h3>
+                </div>
+                
+            </div>
+            <div class=" row contentDiv col-xs-12" ng-hide="noBusiness === true">
+                <ul class="nav nav-tabs nav-justified">
+                    <li class="active"><a data-target="#1" data-toggle="tab">Managers <span class="glyphicon glyphicon-user"></span> <span id="notification">&nbsp; {{managerNotification}} &nbsp;</span></a></li>
+                    <li><a data-target="#2" data-toggle="tab">Logs <span class="glyphicon glyphicon-list-alt"></span></a></li>
+                    <li><a data-target="#3" data-toggle="tab">Sales <span class="glyphicon glyphicon-stats"></span></a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="1">
+                        <table class="table table-striped" ng-hide="Managers.length === 0 && PendingManagers.length ===0">
+                            <thead>
+                                <tr>
+                                    <th colspan="1">Manager Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr ng-repeat="manager in Managers">
+                                        
+                                        <td>{{manager.ManagerFullName}}</td>
+                                        <td colspan="3"> <button id="manageBtns" data-toggle="modal" class="btn btn-danger pull-right" data-target="#deleteManagerModal" ng-click="getCurrentManager(manager)"><span class="glyphicon glyphicon-remove-circle"></span> Remove Manager</button></td>
+                                    </tr>
+
+                                    <tr ng-repeat="pendingManager in PendingManagers">
+                                    <td>{{pendingManager.ManagerFullName}}</td>
+                                    <td colspan="2"><button id="manageBtns" class="btn btn-success pull-right" ng-click="acceptManagerRequest(pendingManager)"> <span class="glyphicon glyphicon-ok-circle"></span> Add Manager</button></td>
+                                    <td> <button id="manageBtns" class="btn btn-danger pull-right" ng-click="removeManagerRequest(pendingManager)"> <span class="glyphicon glyphicon-remove-circle"></span> Remove Manager</button></td>
+                                </tr> 
+                             
+                            </tbody>
+                        </table>
+                        <h3 class="text-center" ng-show="Managers.length === 0 && PendingManagers.length ===0">No Managers added yet! Tell your Managers to sign up!</h3>
+                        </div> <!-- end tab pane 1 -->
+                        <div class="tab-pane" id="2">
+
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <label style="margin-right: 10px; ">Search</label>
+                                    <input type="text" ng-model="search" class="form-control" placeholder="Start searching eg. Sunny">
+                                </div>
+                            </form>
+
+
+                            <table id="logTable" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th ng-click="sort('Date')" style="cursor: pointer;">Date <span class="glyphicon glyphicon-calendar"></span>
+                                            <span class="glyphicon sort-icon" ng-show="sortKey=='Date' " ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+
+                                        </th>
+                                        <th>Created By
+                                            <span class="glyphicon glyphicon-user"></span>
+                                        </th>
+                                        <th ng-click="sort('Sales')" style="cursor: pointer;">Total Sales <span class="glyphicon glyphicon-usd"></span>
+                                            <span class="glyphicon sort-icon" ng-show="sortKey=='Sales' " ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+
+                                        </th>
+                                        <th >View <span class="glyphicon glyphicon-zoom-in"></span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr ng-repeat="log in Logs.slice(((currentPage-1)*itemsPerPage), ((currentPage)*itemsPerPage)) | orderBy:sortKey:reverse | filter:search">
+                                        
+                                        <td>{{log.Date | date}}</td>
+                                        <td>{{log.LogsAuthorName}}</td>
+                                        <td>{{log.Sales | currency}}</td>
+                                        <td><button data-toggle="modal" class="btn btn-success" ng-click="viewLog(log)"data-target="#viewLogModal">View</button></td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                                    <!-- <pagination total-items="totaItems" ng-model="currentPage"  
+                                         max-size="5" 
+                                         items-per-page="numPerPage" class="pagination-sm">  
+                                    </pagination> -->  
+
+                                    <div class="row col-xs-12">
+                                        <uib-pagination total-items="totaltems" ng-model="currentPage" ng-change="pageChanged()" items-per-page="itemsPerPage" ></uib-pagination>
+                                    </div>
+
+                                    
+
+                                    <div class="row col-xs-12" style="padding-bottom: 25px;">
+                                        <button data-toggle="modal" class="btn btn-success" data-target="#addNewLogModal"><span class="glyphicon glyphicon-edit"></span> Add New Log</button>
+                            <button type="submit" class="btn btn-info" ng-click="getLogs(Business.BusinessID)"><span class="glyphicon glyphicon-refresh"></span> Refresh Logs List</button>
+                                    </div>
+
+                            
+                            </div> <!-- end tab pane 2 -->
+                            <div class="tab-pane" id="3">
+                                <div class="row form-group">
+                                    <div class="row col-xs-12">
+                                        <label class="control-label col-xs-4 " for="">Select Option: </label>
+                                        <select class="col-xs-8 col-sm-pull-1 col-lg-pull-2 form-control" required ng-model="salesReportsOption"
+                                        ng-options="option as option.label for option in options">
+                                    </select>
+
+
+                                    <div class="row col-xs-12">
+                                        <p>Info: For Sales Reports to remain as accurate as possible, we recommend one Log entry per day. And atleast one full week of Logs.</p>
+                                    </div>
+                                    
+                                    
+
+                                    </div>
+                                    
+                                    <div class="row col-xs-12">
+                                    <button data-toggle="modal" class="btn btn-success" ng-click="openReport(salesReportsOption)"data-target="#salesReportModal" style="margin-left: 15px;">Generate Sales Report</button>
+                                    </div>
+                                    
+                                </div>     
+                                
+                                </div> <!-- end tab pane 3 -->
+                                </div> <!-- end tab content -->
+                                </div> <!-- end content div here -->
+
+
+                                <div class="modal" data-backdrop="static" id="addNewLogModal" role="dialog">
+                                    <div class="modal-dialog">
+                                        
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h3 class="modal-title text-center">New Log</h3>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form name="newLogForm" novalidate ng-submit="addNewLog()" >
+                                                    <div class="form-group">
+                                                        <label for="date"><p>Today's Date: </p></label>
+                                                        <label for="">{{date | date: 'MM-dd-yyyy' }}</label>
+                                                    </div>
+                                                    <div class="form-group form-inline">
+                                                        <label for="weather"><p>Today's Weather: </p></label>
+                                                        <input type="text" class="form-control" ng-model="newLog.weather" placeholder="eg. Rain  / Sunny " ng-required="true"/>
+                                                    </div>
+                                                    <div class="form-group form-inline">
+                                                        <label for="sales"><p id="">Total Sales:</p></label>
+                                                        <input type="number" min="0" ng-model="newLog.sales" class="form-control" placeholder="Enter Total Sales" ng-required="true"/>
+                                                    </div>
+                                                    <div class="form-group form-inline">
+                                                        <label for="tickets"><p id="">Ticket Totals:</p></label>
+                                                        <input type="number" min="0" ng-model="newLog.DineInNo" class="form-control" style="width: 140px;" placeholder="Dine In Tickets" ng-required="true"/>
+                                                        <input type="number" min="0" ng-model="newLog.TakeOutNo" class="form-control" style="width: 143px;" placeholder="Takeout Tickets" ng-required="true"/>
+                                                        <input type="number" min="0" ng-model="newLog.DeliveryNo" class="form-control" style="width: 140px;" placeholder="Delivery Tickets" ng-required="true"/>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="message"><p id="">Message:</p></label>
+                                                        <textarea class="form-control" ng-model="newLog.message" style="min-width: 100%" ng-required="true"></textarea>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-success" onclick="$('#addNewLogModal').modal('hide')"><span class="glyphicon glyphicon-ok"></span> Save</button>
+                                                    <button type="buton" class="btn btn-danger" data-dismiss="modal"> <span class="glyphicon glyphicon-remove"></span> Close</button>
+                                                    </div> <!-- end modal body -->
+                                                    </div> <!-- end modal content -->
+                                                    </div> <!-- end modal dialog -->
+                                                    </div> <!-- end modal -->
+                                                    <div class="modal" id="salesReportModal" role="dialog">
+                                                        <div class="modal-dialog">
+                                                            
+                                                            <!-- Modal content-->
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h3 class="modal-title text-center">{{optionChosen}} Sales</h3>
+                                                                </div>
+                                                                <div class="modal-body" ng-hide="notEnoughData == true">
+                                                                    <canvas id="line" class="chart chart-line" chart-data="data"
+                                                                    chart-labels="labels" chart-legend="false" chart-series="series">
+                                                                    </canvas>
+                                                                    <a class="btn btn-info" ng-click="getAverage(data)">Generate Average and Total Sales</a>
+                                                                    <br>
+                                                                    <label for="average" ng-show="showSpecialReports"><p id="">Average Sales:</p></label>
+                                                                    <label for="" ng-show="showSpecialReports">{{average | currency}}</label>
+                                                                    <label for="total" ng-show="showSpecialReports"><p id="">Total Sales:</p></label>
+                                                                    <label for="" ng-show="showSpecialReports">{{total | currency}}</label>
+                                                                    
+                                                                    <br>
+                                                                    <a class="btn btn-danger" data-dismiss="modal">  <span class="glyphicon glyphicon-remove"></span> Close</a>
+                                                                    </div> <!-- end modal body -->
+
+                                                                    <div class="modal-body" ng-show="notEnoughData==true">
+
+                                                                        <p>Sorry, not enough data to display chart!</p>
+
+                                                                    <a class="btn btn-danger" data-dismiss="modal">  <span class="glyphicon glyphicon-remove"></span> Close</a>
+                                                                    </div> <!-- end modal body -->
+
+
+                                                                    </div> <!-- end modal content -->
+                                                                    </div> <!-- end modal dialog -->
+                                                                    </div> <!-- end modal -->
+                                                                  
+
+                           <div class="modal" data-backdrop="static" id="viewLogModal" role="dialog">
+                                    <div class="modal-dialog">
+                                        
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h3 class="modal-title text-center">View Log</h3>
+                                            </div>
+                                            <div class="modal-body">
+
+                                                    <div class="form-group">
+                                                        <label for="date"><p>Date: </p></label>
+                                                        <label for="">{{currentLog.Date}}</label>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="weather"><p>Weather: </p></label>
+                                                        <label for="">{{currentLog.Weather}}</label>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="sales"><p id="">Total Sales:</p></label>
+                                                        <label for="">{{currentLog.Sales  | currency}}</label>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="tickets"><p id="">Ticket Totals:</p></label>
+                                                        <label for=""> Dine In: {{currentLog.DineInNo}}</label>
+                                                        <label for="">Takeout: {{currentLog.TakeOutNo}}</label>
+                                                        <label for="">Delivery: {{currentLog.DeliveryNo}}</label>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="message"><p id="">Message:</p></label>
+                                                        <label for="">{{currentLog.Message}}</label>
+                                                    </div>
+                                                    <button type="buton" class="btn btn-info" data-dismiss="modal">  <span class="glyphicon glyphicon-remove"></span>  Close</button>
+                                                    <button type="buton" class="btn btn-danger pull-right" ng-click="deleteLog(currentLog)"data-dismiss="modal">Delete this Log</button>
+
+                                                    </div> <!-- end modal body -->
+                                                    </div> <!-- end modal content -->
+                                                    </div> <!-- end modal dialog -->
+                                                    </div> <!-- end modal -->   
+
+                           <div class="modal" data-backdrop="static" id="deleteManagerModal" role="dialog">
+                                    <div class="modal-dialog">
+                                        
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h3 class="modal-title text-center">Delete Manager</h3>
+                                            </div>
+                                            <div class="modal-body">
+
+                                                    <div class="form-group">
+                                                        <p>Are you sure you wish to remove this manager?</p>
+                                                        
+                                                    </div>
+                                                    <button type="buton" class="btn btn-success" ng-click="deleteManager()"data-dismiss="modal">Yes, Delete!</button>
+                                                    <button type="buton" class="btn btn-danger" data-dismiss="modal">  <span class="glyphicon glyphicon-remove"></span>  No, Go Back!</button>
+                                                    </div> <!-- end modal body -->
+                                                    </div> <!-- end modal content -->
+                                                    </div> <!-- end modal dialog -->
+                                                    </div> <!-- end modal -->                                                                               
+                                                                                    
+                                                                                    </div> <!-- end container -->

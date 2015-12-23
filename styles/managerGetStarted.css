@@ -1,0 +1,52 @@
+ body{
+     background: url("../imgs/food.png");
+    }
+    #title{
+    padding-top: 50px;
+    padding-bottom: 25px;
+    font-weight: bold;
+    }
+    .form-control{
+    width: 100%;
+    }
+    .control-label{
+      color: black;
+      font-size: 1.15em;
+      padding-right: 0px;
+    }
+    p{
+      margin: 10px 0px;
+      font-size: 14px;
+    }
+    #abstract{
+      font-size: 1.2em;
+    }
+    a{
+      cursor: pointer;
+    }
+@media (min-width: 768px){
+  .col-sm-6 {
+    width: 55%;
+}
+}
+#businessSearchDiv{
+  margin-top: 25px;
+  background: #FFFFFF;
+      border-radius: 10px;
+      padding: 40px;
+}
+.jumbotron{
+  font: 400 100px/1.3 'Oleo Script', Helvetica, sans-serif;
+  color: #2b2b2b;
+  text-shadow: 4px 4px 0px rgba(0,0,0,0.1);
+  background-color:rgba(255,255,255,0.3); 
+}
+#styles_table{
+margin-top: 20px;
+}
+.form-group{
+  margin-bottom: 20px;
+}
+#modal_text{
+  margin-bottom: 35px;
+}
